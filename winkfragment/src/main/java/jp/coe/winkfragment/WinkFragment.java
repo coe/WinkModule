@@ -30,7 +30,7 @@ import jp.coe.winkfragment.camera.CameraSourcePreview;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * WinkFragment class.
  * Activities that contain this fragment must implement the
  * {@link WinkFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
@@ -38,42 +38,53 @@ import jp.coe.winkfragment.camera.CameraSourcePreview;
  * create an instance of this fragment.
  */
 public class WinkFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
     /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        /**
+         * Eyes Close.
+         */
+        public void onClose();
+
+        /**
+         * Eyes long close.
+         */
+        public void onLongClose();
+
+    }
+
+    /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment WinkFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static WinkFragment newInstance(String param1, String param2) {
         WinkFragment fragment = new WinkFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
 
+    /**
+     * new WinkFragment
+     */
     public WinkFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
 
     }
@@ -81,7 +92,6 @@ public class WinkFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG,"onCreateView");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_wink, container, false);
         mPreview = (CameraSourcePreview) view.findViewById(R.id.preview);
@@ -91,7 +101,6 @@ public class WinkFragment extends Fragment {
 
     @Override
     public void onStart() {
-        Log.d(TAG,"onStart");
 
         super.onStart();
         // Check for the camera permission before accessing the camera.  If the
@@ -113,8 +122,6 @@ public class WinkFragment extends Fragment {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-
-
     }
 
     @Override
@@ -123,43 +130,6 @@ public class WinkFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onClose();
-        public void onLongClose();
-
-    }
-
-
-    /* ここから */
-
-    private static final String TAG = "MainActivity";
-
-    private CameraSource mCameraSource = null;
-
-    private CameraSourcePreview mPreview;
-//    private GraphicOverlay mGraphicOverlay;
-
-
-    private static final int RC_HANDLE_GMS = 9001;
-    // permission request codes need to be < 256
-    private static final int RC_HANDLE_CAMERA_PERM = 2;
-
-    private static final float THRESHOLD = 0.35f;
-
-    /**
-     * Restarts the camera.
-     */
     @Override
     public void onResume() {
         super.onResume();
@@ -167,10 +137,6 @@ public class WinkFragment extends Fragment {
         startCameraSource();
     }
 
-    /**
-     * Releases the resources associated with the camera source, the associated detector, and the
-     * rest of the processing pipeline.
-     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -178,6 +144,20 @@ public class WinkFragment extends Fragment {
             mCameraSource.release();
         }
     }
+
+
+    private static final String TAG = "MainActivity";
+
+    private CameraSource mCameraSource = null;
+
+    private CameraSourcePreview mPreview;
+
+
+    private static final int RC_HANDLE_GMS = 9001;
+    private static final int RC_HANDLE_CAMERA_PERM = 2;
+
+    private static final float THRESHOLD = 0.35f;
+
 
 
     /**
@@ -208,7 +188,6 @@ public class WinkFragment extends Fragment {
     private class WinkFaceTracker extends Tracker<Face> {
 
         WinkFaceTracker(Face face) {
-            Log.d(TAG, "WinkFaceTracker instance");
         }
 
         /**
@@ -216,15 +195,6 @@ public class WinkFragment extends Fragment {
          */
         @Override
         public void onNewItem(int faceId, Face face) {
-            Log.d(TAG, "onNewItem");
-//            if(THRESHOLD > face.getIsLeftEyeOpenProbability() && THRESHOLD > face.getIsRightEyeOpenProbability()) {
-//                Log.e(TAG, "目閉じてる！");
-//                mListener.onClose();
-//                closeFlg = true;
-//            }
-
-            Log.d(TAG, "getIsLeftEyeOpenProbability "+face.getIsLeftEyeOpenProbability());
-            Log.d(TAG, "getIsRightEyeOpenProbability " + face.getIsRightEyeOpenProbability());
         }
 
         private boolean isLeftClose(Face face){
@@ -236,7 +206,6 @@ public class WinkFragment extends Fragment {
         }
 
         private void reset(){
-            Log.d(TAG,"reset");
 
             firstLeftEyeCloseDate = new Date(Long.MAX_VALUE);
             firstRightEyeCloseDate = new Date(Long.MAX_VALUE);
@@ -247,10 +216,6 @@ public class WinkFragment extends Fragment {
          */
         @Override
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
-            Log.d(TAG, "onUpdate");
-
-            Log.d(TAG, "getIsLeftEyeOpenProbability " + face.getIsLeftEyeOpenProbability());
-            Log.d(TAG, "getIsRightEyeOpenProbability "+face.getIsRightEyeOpenProbability());
 
             //どちらも正の値でなければリターン
             if(face.getIsLeftEyeOpenProbability() < 0 || face.getIsRightEyeOpenProbability() < 0) return;
@@ -270,15 +235,12 @@ public class WinkFragment extends Fragment {
 
                 //長めに閉じているか
                 final Date now = new Date(System.currentTimeMillis() - LONG_CLOSE_MILL);
-                Log.d(TAG,"firstLeftEyeCloseDate " + firstLeftEyeCloseDate.getTime());
-                Log.d(TAG,"now " + now.getTime());
 
                 int diff = now.compareTo(firstLeftEyeCloseDate);
                 int diff2 = now.compareTo(firstRightEyeCloseDate);
 
                 if (diff > 0 && diff2 > 0) {
                     //今の時刻より引いてある日時が、firstLeftEyeCloseDateよりも
-                    Log.d(TAG,"長く目を閉じる");
                     reset();
                     mListener.onLongClose();
                     return;
@@ -292,14 +254,8 @@ public class WinkFragment extends Fragment {
             int diff = now.compareTo(firstLeftEyeCloseDate);
             int diff2 = now.compareTo(firstRightEyeCloseDate);
 
-            Log.d(TAG,"軽く目を閉じるチェック");
-            Log.d(TAG,"firstLeftEyeCloseDate " + firstLeftEyeCloseDate.getTime());
-            Log.d(TAG,"now " + now.getTime());
-
             if (diff > 0 && diff2 > 0) {
-                Log.d(TAG,"軽く目を閉じるチェック");
                 if(!isRightClose(face) && !isLeftClose(face) ) {
-                    Log.d(TAG,"軽く目を閉じる");
                     mListener.onClose();
                     reset();
                     return;
@@ -321,7 +277,6 @@ public class WinkFragment extends Fragment {
          */
         @Override
         public void onMissing(FaceDetector.Detections<Face> detectionResults) {
-            Log.d(TAG, "onMissing");
         }
 
         /**
@@ -330,7 +285,6 @@ public class WinkFragment extends Fragment {
          */
         @Override
         public void onDone() {
-            Log.d(TAG, "onDone");
         }
     }
 
@@ -375,7 +329,6 @@ public class WinkFragment extends Fragment {
      * at long distances.
      */
     private void createCameraSource() {
-        Log.d(TAG, "createCameraSource");
 
         Context context = getActivity().getApplicationContext();
         FaceDetector detector = new FaceDetector.Builder(context)
@@ -424,13 +377,11 @@ public class WinkFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode != RC_HANDLE_CAMERA_PERM) {
-            Log.d(TAG, "Got unexpected permission result: " + requestCode);
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             return;
         }
 
         if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "Camera permission granted - initialize the camera source");
             // we have permission, so create the camerasource
             createCameraSource();
             return;
@@ -458,7 +409,6 @@ public class WinkFragment extends Fragment {
      * again when the camera source is created.
      */
     private void startCameraSource() {
-        Log.d(TAG, "startCameraSource");
 
         // check that the device has play services available.
         int code = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(
