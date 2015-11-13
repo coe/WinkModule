@@ -14,6 +14,8 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
 
     private static final String TAG = "MainActivity";
     Ringtone mRingtoneClose;
+    Ringtone mRingtoneLeftClose;
+    Ringtone mRingtoneRightClose;
     Ringtone mRingtoneLongClose;
 
     private Runnable mRunnable;
@@ -26,17 +28,16 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
 
         mRingtoneClose = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
         mRingtoneLongClose = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+        mRingtoneLeftClose =
+                RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
+        mRingtoneRightClose =
+                RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE));
 
     }
 
     @Override
     public void onClose() {
-        if(mRingtoneClose.isPlaying()) {
-            mRingtoneClose.stop();
-        } else {
-            mRingtoneClose.play();
-        }
-
+        execTone(mRingtoneClose);
     }
 
 
@@ -51,5 +52,24 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
         };
         mHandler.postDelayed(mRunnable, 2000);
 
+    }
+
+    @Override
+    public void onLeftClose() {
+        execTone(mRingtoneLeftClose);
+    }
+
+    @Override
+    public void onRightClose() {
+        execTone(mRingtoneRightClose);
+    }
+
+
+    private void execTone(Ringtone tone){
+        if(tone.isPlaying()) {
+            tone.stop();
+        } else {
+            tone.play();
+        }
     }
 }

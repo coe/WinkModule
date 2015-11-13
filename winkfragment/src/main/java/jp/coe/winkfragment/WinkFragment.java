@@ -62,6 +62,16 @@ public class WinkFragment extends Fragment {
          */
         public void onLongClose();
 
+        /**
+         * Left Eye close.
+         */
+        public void onLeftClose();
+
+        /**
+         * Right Eye close.
+         */
+        public void onRightClose();
+
     }
 
     /**
@@ -240,7 +250,6 @@ public class WinkFragment extends Fragment {
                 int diff2 = now.compareTo(firstRightEyeCloseDate);
 
                 if (diff > 0 && diff2 > 0) {
-                    //今の時刻より引いてある日時が、firstLeftEyeCloseDateよりも
                     reset();
                     mListener.onLongClose();
                     return;
@@ -251,12 +260,28 @@ public class WinkFragment extends Fragment {
 
             //短く目を閉じているか
             final Date now = new Date(System.currentTimeMillis() - SHORT_CLOSE_MILL);
-            int diff = now.compareTo(firstLeftEyeCloseDate);
-            int diff2 = now.compareTo(firstRightEyeCloseDate);
+            int diffLeft = now.compareTo(firstLeftEyeCloseDate);
+            int diffRight = now.compareTo(firstRightEyeCloseDate);
 
-            if (diff > 0 && diff2 > 0) {
+            if (diffLeft > 0 && diffRight > 0) {
                 if(!isRightClose(face) && !isLeftClose(face) ) {
                     mListener.onClose();
+                    reset();
+                    return;
+                }
+            }
+
+            if (diffLeft > 0) {
+                if(!isLeftClose(face) ) {
+                    mListener.onLeftClose();
+                    reset();
+                    return;
+                }
+            }
+
+            if (diffRight > 0) {
+                if(!isRightClose(face) ) {
+                    mListener.onRightClose();
                     reset();
                     return;
                 }
