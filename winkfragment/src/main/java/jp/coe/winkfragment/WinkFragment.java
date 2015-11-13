@@ -166,7 +166,7 @@ public class WinkFragment extends Fragment {
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
 
-    private static final float THRESHOLD = 0.35f;
+    private static final float THRESHOLD = 0.15f;
 
 
 
@@ -184,8 +184,8 @@ public class WinkFragment extends Fragment {
 
     private boolean closeFlg = false;
 
-    private Date firstRightEyeCloseDate = new Date(0);
-    private Date firstLeftEyeCloseDate = new Date(0);
+    private Date firstRightEyeCloseDate = new Date(Long.MAX_VALUE);
+    private Date firstLeftEyeCloseDate = new Date(Long.MAX_VALUE);
 
     private final int LONG_CLOSE_MILL = 2000;
     private final int SHORT_CLOSE_MILL = 300;
@@ -227,11 +227,14 @@ public class WinkFragment extends Fragment {
         @Override
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
 
+            Log.d(TAG,""+face.getIsLeftEyeOpenProbability()+"face.getIsLeftEyeOpenProbability() ");
+            Log.d(TAG,""+face.getIsRightEyeOpenProbability()+ "face.getIsRightEyeOpenProbability() ");
+
             //どちらも正の値でなければリターン
             if(face.getIsLeftEyeOpenProbability() < 0 || face.getIsRightEyeOpenProbability() < 0) return;
 
             //初めて目を閉じた時間
-            if(firstRightEyeCloseDate.compareTo(new Date(Long.MAX_VALUE)) == 0 && isLeftClose(face)){
+            if(firstLeftEyeCloseDate.compareTo(new Date(Long.MAX_VALUE)) == 0 && isLeftClose(face)){
                 firstLeftEyeCloseDate = new Date(System.currentTimeMillis());
             }
 
@@ -272,7 +275,10 @@ public class WinkFragment extends Fragment {
             }
 
             if (diffLeft > 0) {
-                if(!isLeftClose(face) ) {
+                //大小比較
+                if(
+                        face.getIsLeftEyeOpenProbability() < face.getIsRightEyeOpenProbability()
+                        ) {
                     mListener.onLeftClose();
                     reset();
                     return;
@@ -280,7 +286,9 @@ public class WinkFragment extends Fragment {
             }
 
             if (diffRight > 0) {
-                if(!isRightClose(face) ) {
+                if(
+                        face.getIsRightEyeOpenProbability() < face.getIsLeftEyeOpenProbability()
+                        ) {
                     mListener.onRightClose();
                     reset();
                     return;

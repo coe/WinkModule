@@ -37,12 +37,14 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
 
     @Override
     public void onClose() {
+        Log.d(TAG,"onClose");
         execTone(mRingtoneClose);
     }
 
 
     @Override
     public void onLongClose() {
+        Log.d(TAG,"onLongClose");
         mRingtoneLongClose.play();
         mRunnable = new Runnable() {
             public void run() {
@@ -56,11 +58,13 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
 
     @Override
     public void onLeftClose() {
+        Log.d(TAG,"onLeftClose");
         execTone(mRingtoneLeftClose);
     }
 
     @Override
     public void onRightClose() {
+        Log.d(TAG,"onRightClose");
         execTone(mRingtoneRightClose);
     }
 
