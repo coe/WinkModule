@@ -227,8 +227,8 @@ public class WinkFragment extends Fragment {
         @Override
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
 
-            Log.d(TAG,""+face.getIsLeftEyeOpenProbability()+"face.getIsLeftEyeOpenProbability() ");
-            Log.d(TAG,""+face.getIsRightEyeOpenProbability()+ "face.getIsRightEyeOpenProbability() ");
+//            Log.d(TAG,""+face.getIsLeftEyeOpenProbability()+"face.getIsLeftEyeOpenProbability() ");
+//            Log.d(TAG,""+face.getIsRightEyeOpenProbability()+ "face.getIsRightEyeOpenProbability() ");
 
             //どちらも正の値でなければリターン
             if(face.getIsLeftEyeOpenProbability() < 0 || face.getIsRightEyeOpenProbability() < 0) return;
@@ -244,7 +244,7 @@ public class WinkFragment extends Fragment {
 
             //今両目を閉じているか
             if(isLeftClose(face) && isRightClose(face)) {
-                Log.d(TAG,"長く目を閉じるチェック");
+//                Log.d(TAG,"長く目を閉じるチェック");
 
                 //長めに閉じているか
                 final Date now = new Date(System.currentTimeMillis() - LONG_CLOSE_MILL);
