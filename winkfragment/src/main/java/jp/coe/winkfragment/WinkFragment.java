@@ -4,7 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -334,7 +334,8 @@ public class WinkFragment extends Fragment {
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
                 Manifest.permission.CAMERA)) {
-            ActivityCompat.requestPermissions(thisActivity, permissions, RC_HANDLE_CAMERA_PERM);
+            requestPermissions(permissions,RC_HANDLE_CAMERA_PERM);
+//            ActivityCompat.requestPermissions(thisActivity, permissions, RC_HANDLE_CAMERA_PERM);
             return;
         }
 
@@ -342,18 +343,6 @@ public class WinkFragment extends Fragment {
         ActivityCompat.requestPermissions(thisActivity, permissions,
                 RC_HANDLE_CAMERA_PERM);
 
-//        View.OnClickListener listener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ActivityCompat.requestPermissions(thisActivity, permissions,
-//                        RC_HANDLE_CAMERA_PERM);
-//            }
-//        };
-//
-//        Snackbar.make(getActivity().findViewById(R.id.preview), android.R.string.dialog_alert_title,
-//                Snackbar.LENGTH_INDEFINITE)
-//                .setAction(android.R.string.ok, listener)
-//                .show();
     }
 
     /**
@@ -409,13 +398,16 @@ public class WinkFragment extends Fragment {
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        Log.d(TAG,"onRequestPermissionsResult");
         if (requestCode != RC_HANDLE_CAMERA_PERM) {
+            Log.d(TAG,"not RC_HANDLE_CAMERA_PERM");
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             return;
         }
 
         if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // we have permission, so create the camerasource
+            Log.d(TAG,"createCameraSource");
             createCameraSource();
             return;
         }
