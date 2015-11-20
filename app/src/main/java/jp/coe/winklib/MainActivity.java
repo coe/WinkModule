@@ -56,13 +56,11 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
 
     }
 
-    @Override
     public void onLeftClose() {
         Log.d(TAG,"onLeftClose");
         execTone(mRingtoneLeftClose);
     }
 
-    @Override
     public void onRightClose() {
         Log.d(TAG,"onRightClose");
         execTone(mRingtoneRightClose);

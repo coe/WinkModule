@@ -7,8 +7,6 @@ facial recognition for Android
 ## 取得できる動作
 * 目を閉じる
 * 目を長く閉じる
-* 左目を閉じる
-* 右目を閉じる
 
 ## Gradle
 
@@ -16,7 +14,7 @@ repositories {
 maven { url 'http://raw.github.com/coe/WinkModule/master/repository/' }
 }
 dependencies {
-compile 'jp.coe.winkfragment:winkfragment:1.1.2'
+compile 'jp.coe.winkfragment:winkfragment:1.1.4'
 }
 
 ## How to use
