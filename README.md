@@ -12,12 +12,12 @@ facial recognition for Android
 
 ## Gradle
 
-    repositories {
-        maven { url 'http://raw.github.com/coe/WinkModule/master/repository/' }
-    }
-    dependencies {
-        compile 'jp.coe.winkfragment:winkfragment:1.1.2'
-    }
+repositories {
+maven { url 'http://raw.github.com/coe/WinkModule/master/repository/' }
+}
+dependencies {
+compile 'jp.coe.winkfragment:winkfragment:1.1.2'
+}
 
 ## How to use
 - `implements WinkFragment.OnFragmentInteractionListener ` をあなたのActivityに追加
@@ -25,3 +25,5 @@ facial recognition for Android
 
 ## more
 付属のサンプルアプリも確認してください。
+
+# sponsored by  [R-Learning](http://www.r-learning.co.jp "R-Learning")
