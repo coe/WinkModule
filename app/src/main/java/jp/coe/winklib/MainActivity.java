@@ -55,12 +55,13 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
         mHandler.postDelayed(mRunnable, 2000);
 
     }
-
+    @Override
     public void onLeftClose() {
         Log.d(TAG,"onLeftClose");
         execTone(mRingtoneLeftClose);
     }
 
+    @Override
     public void onRightClose() {
         Log.d(TAG,"onRightClose");
         execTone(mRingtoneRightClose);
@@ -68,10 +69,10 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
 
 
     private void execTone(Ringtone tone){
-        if(tone.isPlaying()) {
-            tone.stop();
-        } else {
-            tone.play();
-        }
+//        if(tone.isPlaying()) {
+//            tone.stop();
+//        } else {
+//            tone.play();
+//        }
     }
 }

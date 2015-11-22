@@ -62,15 +62,15 @@ public class WinkFragment extends Fragment {
          */
         public void onLongClose();
 
-//        /**
-//         * Left Eye close.
-//         */
-//        public void onLeftClose();
-//
-//        /**
-//         * Right Eye close.
-//         */
-//        public void onRightClose();
+        /**
+         * Left Eye close.
+         */
+        public void onLeftClose();
+
+        /**
+         * Right Eye close.
+         */
+        public void onRightClose();
 
     }
 
@@ -199,6 +199,9 @@ public class WinkFragment extends Fragment {
 
         private Boolean mLongCloseFlg = false;
 
+        private Boolean mLeftCloseFlg = false;
+        private Boolean mRightCloseFlg = false;
+
         WinkFaceTracker(Face face) {
         }
 
@@ -229,8 +232,8 @@ public class WinkFragment extends Fragment {
         @Override
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
 
-//            Log.d(TAG,""+face.getIsLeftEyeOpenProbability()+"face.getIsLeftEyeOpenProbability() ");
-//            Log.d(TAG,""+face.getIsRightEyeOpenProbability()+ "face.getIsRightEyeOpenProbability() ");
+            Log.d(TAG,""+face.getIsLeftEyeOpenProbability()+"face.getIsLeftEyeOpenProbability() ");
+            Log.d(TAG,""+face.getIsRightEyeOpenProbability()+ "face.getIsRightEyeOpenProbability() ");
 
             //どちらも正の値でなければリターン
             if(face.getIsLeftEyeOpenProbability() < 0 || face.getIsRightEyeOpenProbability() < 0) return;
@@ -276,31 +279,43 @@ public class WinkFragment extends Fragment {
                     } else {
                         mListener.onClose();
                     }
+                    mLeftCloseFlg = false;
+                    mRightCloseFlg = false;
                     reset();
+                    return;
+                }
+            } else if (mLeftCloseFlg) {
+                mListener.onLeftClose();
+                mLeftCloseFlg = false;
+                reset();
+                return;
+            } else if (mRightCloseFlg) {
+                mRightCloseFlg = false;
+
+                mListener.onRightClose();
+                reset();
+                return;
+            }
+
+            if (diffLeft > 0) {
+                //大小比較
+                if(
+                        face.getIsLeftEyeOpenProbability() < face.getIsRightEyeOpenProbability()
+
+                        ) {
+                    mLeftCloseFlg = true;
                     return;
                 }
             }
 
-//            if (diffLeft > 0) {
-//                //大小比較
-//                if(
-//                        face.getIsLeftEyeOpenProbability() < face.getIsRightEyeOpenProbability()
-//                        ) {
-//                    mListener.onLeftClose();
-//                    reset();
-//                    return;
-//                }
-//            }
-//
-//            if (diffRight > 0) {
-//                if(
-//                        face.getIsRightEyeOpenProbability() < face.getIsLeftEyeOpenProbability()
-//                        ) {
-//                    mListener.onRightClose();
-//                    reset();
-//                    return;
-//                }
-//            }
+            if (diffRight > 0) {
+                if(
+                        face.getIsRightEyeOpenProbability() < face.getIsLeftEyeOpenProbability()
+                        ) {
+                    mRightCloseFlg = true;
+                    return;
+                }
+            }
 
             if(!isLeftClose(face) && !isRightClose(face)) {
                 reset();
