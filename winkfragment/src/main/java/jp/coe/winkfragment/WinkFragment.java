@@ -356,14 +356,18 @@ public class WinkFragment extends Fragment {
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
                 Manifest.permission.CAMERA)) {
+            Log.w(TAG, "not shouldShowRequestPermissionRationale");
             requestPermissions(permissions,RC_HANDLE_CAMERA_PERM);
 //            ActivityCompat.requestPermissions(thisActivity, permissions, RC_HANDLE_CAMERA_PERM);
             return;
         }
 
         //アラート
-        ActivityCompat.requestPermissions(thisActivity, permissions,
-                RC_HANDLE_CAMERA_PERM);
+        Log.w(TAG, "shouldShowRequestPermissionRationale");
+        requestPermissions(permissions,RC_HANDLE_CAMERA_PERM);
+//        //thisActivity on OnRequestPermissionsResultCallback
+//        ActivityCompat.requestPermissions(thisActivity, permissions,
+//                RC_HANDLE_CAMERA_PERM);
 
     }
 
@@ -421,33 +425,47 @@ public class WinkFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         Log.d(TAG,"onRequestPermissionsResult");
-        if (requestCode != RC_HANDLE_CAMERA_PERM) {
-            Log.d(TAG,"not RC_HANDLE_CAMERA_PERM");
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-            return;
+        switch(requestCode){
+            case RC_HANDLE_CAMERA_PERM:
+                if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // we have permission, so create the camerasource
+                    Log.d(TAG,"createCameraSource");
+                    createCameraSource();
+                    return;
+                } else {
+                    getActivity().finish();
+                }
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         }
-
-        if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // we have permission, so create the camerasource
-            Log.d(TAG,"createCameraSource");
-            createCameraSource();
-            return;
-        }
-
-        Log.e(TAG, "Permission not granted: results len = " + grantResults.length +
-                " Result code = " + (grantResults.length > 0 ? grantResults[0] : "(empty)"));
-
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                getActivity().finish();
-            }
-        };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Face Tracker sample")
-                .setMessage(android.R.string.unknownName)
-                .setPositiveButton(android.R.string.ok, listener)
-                .show();
+//        if (requestCode != RC_HANDLE_CAMERA_PERM) {
+//            Log.d(TAG,"not RC_HANDLE_CAMERA_PERM");
+//            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//            return;
+//        }
+//
+//        if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//            // we have permission, so create the camerasource
+//            Log.d(TAG,"createCameraSource");
+//            createCameraSource();
+//            return;
+//        }
+//
+//        Log.e(TAG, "Permission not granted: results len = " + grantResults.length +
+//                " Result code = " + (grantResults.length > 0 ? grantResults[0] : "(empty)"));
+//
+//        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int id) {
+//                getActivity().finish();
+//            }
+//        };
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//        builder.setTitle("Face Tracker sample")
+//                .setMessage(android.R.string.unknownName)
+//                .setPositiveButton(android.R.string.ok, listener)
+//                .show();
     }
 
     /**
