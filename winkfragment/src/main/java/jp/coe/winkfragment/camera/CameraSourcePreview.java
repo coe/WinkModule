@@ -35,7 +35,7 @@ public class CameraSourcePreview extends ViewGroup {
     private SurfaceView mSurfaceView;
     private boolean mStartRequested;
     private boolean mSurfaceAvailable;
-    private CameraSource mCameraSource;
+    public CameraSource mCameraSource;
 
     private GraphicOverlay mOverlay;
 
@@ -176,5 +176,16 @@ public class CameraSourcePreview extends ViewGroup {
 
         Log.d(TAG, "isPortraitMode returning false by default");
         return false;
+    }
+
+    public void takePickture() {
+        if(mCameraSource != null) {
+            mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] bytes) {
+                    Log.d(TAG, "isPortraitMode returning false by default");
+                }
+            });
+        }
     }
 }

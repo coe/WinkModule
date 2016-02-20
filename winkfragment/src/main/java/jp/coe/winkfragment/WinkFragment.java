@@ -467,4 +467,11 @@ public class WinkFragment extends Fragment {
 
     }
 
+    /**
+     * 写真を撮影する
+     */
+    public void takePicture(CameraSource.ShutterCallback shutter, CameraSource.PictureCallback jpeg){
+        mCameraSource.takePicture(shutter, jpeg);
+    }
+
 }
