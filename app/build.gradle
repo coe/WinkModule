@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'android-apt'
+apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 23
@@ -26,9 +26,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile project(':winkfragment')
     compile 'com.google.android.gms:play-services-appindexing:8.3.0'
-//    compile 'com.github.hotchemi:permissionsdispatcher:2.0.7'
-//    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.0.7'
-//    compile('com.github.afollestad.material-dialogs:core:0.8.5.4@aar') {
-//        transitive = true
-//    }
+
 }
