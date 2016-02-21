@@ -125,9 +125,17 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
             fos.write(bytes);
             fos.close();
 
-            // アンドロイドのデータベースへ登録
-            // (登録しないとギャラリーなどにすぐに反映されないため)
-            registAndroidDB(imgPath);
+            MediaScannerConnection.scanFile(this, new String[]{imgPath}, null, new MediaScannerConnection.MediaScannerConnectionClient() {
+                @Override
+                public void onMediaScannerConnected() {
+                    Log.d("Debug", "onMediaScannerConnected ");
+                }
+
+                @Override
+                public void onScanCompleted(String path, Uri uri) {
+                    Log.d("Debug", "onScanCompleted " + path);
+                }
+            });
 
         } catch (Exception e) {
             Log.e("Debug", e.getMessage());
@@ -152,10 +160,7 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
      * @param path 登録するパス
      */
     private void registAndroidDB(String path) {
-        /*
-        アンドロイドのデータベースへ登録
-        (登録しないとギャラリーなどにすぐに反映されないため)
-        */
+
 //        ContentValues values = new ContentValues();
 //        ContentResolver contentResolver = getContentResolver();
 //        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");

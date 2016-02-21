@@ -1,7 +1,6 @@
 package jp.coe.winkfragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.content.Context;
@@ -123,17 +122,17 @@ public class WinkFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnFragmentInteractionListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }
 
-    @Override
+        @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -160,7 +159,7 @@ public class WinkFragment extends Fragment {
 
 
     private static final int RC_HANDLE_GMS = 9001;
-    private static final int RC_HANDLE_CAMERA_PERM = 8;
+    private static final int RC_HANDLE_CAMERA_PERM = 0b1;
 
     private static final float THRESHOLD = 0.3f;
 
@@ -348,20 +347,11 @@ public class WinkFragment extends Fragment {
      */
     private void requestCameraPermission() {
         Timber.d("Camera permission is not granted. Requesting permission");
-        final Activity thisActivity = getActivity();
-
-
-        if (!ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
-                Manifest.permission.CAMERA)) {
-            Timber.w("not shouldShowRequestPermissionRationale");
-            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, RC_HANDLE_CAMERA_PERM);
-//            this.requestPermissions(PERMISSIONS, RC_HANDLE_CAMERA_PERM);
-            return;
-        }
-
         //アラート
         Timber.d("shouldShowRequestPermissionRationale");
-        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, RC_HANDLE_CAMERA_PERM);
+        this.requestPermissions(PERMISSIONS, RC_HANDLE_CAMERA_PERM);
+
+//        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, RC_HANDLE_CAMERA_PERM);
 
     }
 
@@ -419,21 +409,7 @@ public class WinkFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         Timber.d("onRequestPermissionsResult");
-        switch(requestCode){
-            case RC_HANDLE_CAMERA_PERM:
-                if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // we have permission, so create the camerasource
-                    Timber.d("createCameraSource");
-                    createCameraSource();
-                    return;
-                } else {
-                    getActivity().finish();
-                }
-            default:
-                Timber.d("default");
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        }
+        onRequestPermissionsResultImpl(requestCode,permissions,grantResults);
     }
 
     /**
@@ -444,8 +420,14 @@ public class WinkFragment extends Fragment {
      */
     public void onRequestPermissionsResultForFragment(int requestCode, String[] permissions, int[] grantResults) {
         Timber.d("onRequestPermissionsResultForFragment permissions:"+permissions[0]);
-        Timber.d("onRequestPermissionsResultForFragment requestCode:"+requestCode);
+        Timber.d("onRequestPermissionsResultForFragment requestCode:" + requestCode);
+        onRequestPermissionsResultImpl(requestCode & 0x000000ff,permissions,grantResults);
 
+    }
+
+    private void onRequestPermissionsResultImpl(int requestCode, String[] permissions, int[] grantResults) {
+        Timber.d("onRequestPermissionsResultImpl permissions:"+permissions[0]);
+        Timber.d("onRequestPermissionsResultImpl requestCode:" + requestCode);
         if(Arrays.equals(permissions, PERMISSIONS)){
             switch(requestCode){
                 case RC_HANDLE_CAMERA_PERM:
@@ -459,7 +441,6 @@ public class WinkFragment extends Fragment {
                     }
                 default:
                     Timber.d("default");
-//                    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
             }
         }
@@ -497,7 +478,9 @@ public class WinkFragment extends Fragment {
     }
 
     /**
-     * 写真を撮影する
+     * Take Picture
+     * @param shutter shutter callback
+     * @param jpeg picture callback
      */
     public void takePicture(CameraSource.ShutterCallback shutter, CameraSource.PictureCallback jpeg){
         mCameraSource.takePicture(shutter, jpeg);
