@@ -2,15 +2,12 @@ package jp.coe.winkfragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.support.v4.app.Fragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +21,11 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 
 import jp.coe.winkfragment.camera.CameraSourcePreview;
+import timber.log.Timber;
 
 
 /**
@@ -96,7 +95,7 @@ public class WinkFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Timber.plant(new Timber.DebugTree());
     }
 
     @Override
@@ -155,16 +154,13 @@ public class WinkFragment extends Fragment {
         }
     }
 
-
-    private static final String TAG = "MainActivity";
-
     private CameraSource mCameraSource = null;
 
     private CameraSourcePreview mPreview;
 
 
     private static final int RC_HANDLE_GMS = 9001;
-    private static final int RC_HANDLE_CAMERA_PERM = 2;
+    private static final int RC_HANDLE_CAMERA_PERM = 8;
 
     private static final float THRESHOLD = 0.3f;
 
@@ -177,7 +173,7 @@ public class WinkFragment extends Fragment {
     private class WinkFaceTrackerFactory implements MultiProcessor.Factory<Face> {
         @Override
         public Tracker<Face> create(Face face) {
-            Log.d(TAG, "WinkFaceTrackerFactory instance");
+            Timber.d("WinkFaceTrackerFactory instance");
             return new WinkFaceTracker(face);
         }
     }
@@ -343,27 +339,29 @@ public class WinkFragment extends Fragment {
         }
     }
 
+    private final String[] PERMISSIONS = new String[]{Manifest.permission.CAMERA};
+
     /**
      * Handles the requesting of the camera permission.  This includes
      * showing a "Snackbar" message of why the permission is needed then
      * sending the request.
      */
     private void requestCameraPermission() {
-        Log.w(TAG, "Camera permission is not granted. Requesting permission");
+        Timber.d("Camera permission is not granted. Requesting permission");
         final Activity thisActivity = getActivity();
 
-        final String[] permissions = new String[]{Manifest.permission.CAMERA};
 
         if (!ActivityCompat.shouldShowRequestPermissionRationale(thisActivity,
                 Manifest.permission.CAMERA)) {
-//            Log.w(TAG, "not shouldShowRequestPermissionRationale");
-            requestPermissions(permissions,RC_HANDLE_CAMERA_PERM);
+            Timber.w("not shouldShowRequestPermissionRationale");
+            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, RC_HANDLE_CAMERA_PERM);
+//            this.requestPermissions(PERMISSIONS, RC_HANDLE_CAMERA_PERM);
             return;
         }
 
         //アラート
-//        Log.w(TAG, "shouldShowRequestPermissionRationale");
-        requestPermissions(permissions,RC_HANDLE_CAMERA_PERM);
+        Timber.d("shouldShowRequestPermissionRationale");
+        ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, RC_HANDLE_CAMERA_PERM);
 
     }
 
@@ -392,7 +390,7 @@ public class WinkFragment extends Fragment {
             // isOperational() can be used to check if the required native library is currently
             // available.  The detector will automatically become operational once the library
             // download completes on device.
-            Log.w("TAG", "Face detector dependencies are not yet available.");
+            Timber.w("Face detector dependencies are not yet available.");
         }
 
         mCameraSource = new CameraSource.Builder(context, detector)
@@ -420,21 +418,52 @@ public class WinkFragment extends Fragment {
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        Log.d(TAG,"onRequestPermissionsResult");
+        Timber.d("onRequestPermissionsResult");
         switch(requestCode){
             case RC_HANDLE_CAMERA_PERM:
                 if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // we have permission, so create the camerasource
-//                    Log.d(TAG,"createCameraSource");
+                    Timber.d("createCameraSource");
                     createCameraSource();
                     return;
                 } else {
                     getActivity().finish();
                 }
             default:
+                Timber.d("default");
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         }
+    }
+
+    /**
+     * This method is called from AppCompatActivity#onRequestPermissionsResult
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    public void onRequestPermissionsResultForFragment(int requestCode, String[] permissions, int[] grantResults) {
+        Timber.d("onRequestPermissionsResultForFragment permissions:"+permissions[0]);
+        Timber.d("onRequestPermissionsResultForFragment requestCode:"+requestCode);
+
+        if(Arrays.equals(permissions, PERMISSIONS)){
+            switch(requestCode){
+                case RC_HANDLE_CAMERA_PERM:
+                    if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        // we have permission, so create the camerasource
+                        Timber.d("createCameraSource");
+                        createCameraSource();
+                        return;
+                    } else {
+                        getActivity().finish();
+                    }
+                default:
+                    Timber.d("default");
+//                    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+            }
+        }
+
     }
 
     /**
@@ -459,7 +488,7 @@ public class WinkFragment extends Fragment {
             try {
                 mPreview.start(mCameraSource);
             } catch (IOException e) {
-                Log.e(TAG, "Unable to start camera source.", e);
+                Timber.e("Unable to start camera source.", e);
                 mCameraSource.release();
                 mCameraSource = null;
             }

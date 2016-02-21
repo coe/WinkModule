@@ -20,9 +20,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
+//import com.afollestad.materialdialogs.DialogAction;
+//import com.afollestad.materialdialogs.MaterialDialog;
+//import com.afollestad.materialdialogs.Theme;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,15 +34,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import jp.coe.winkfragment.WinkFragment;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.PermissionUtils;
-import permissions.dispatcher.RuntimePermissions;
+//import permissions.dispatcher.NeedsPermission;
+//import permissions.dispatcher.OnNeverAskAgain;
+//import permissions.dispatcher.OnPermissionDenied;
+//import permissions.dispatcher.OnShowRationale;
+//import permissions.dispatcher.PermissionRequest;
+//import permissions.dispatcher.PermissionUtils;
+//import permissions.dispatcher.RuntimePermissions;
 
-@RuntimePermissions
+//@RuntimePermissions
 public class MainActivity extends AppCompatActivity implements WinkFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
@@ -86,15 +86,15 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
     public void onClose() {
         Log.d(TAG, "onClose");
         execTone(mRingtoneClose);
-        mWinkFragment.takePicture(new CameraSource.ShutterCallback() {
-            @Override
-            public void onShutter() {
-                Log.d(TAG, "onShutter");
-            }
-        }, mPicJpgListener);
+//        mWinkFragment.takePicture(new CameraSource.ShutterCallback() {
+//            @Override
+//            public void onShutter() {
+//                Log.d(TAG, "onShutter");
+//            }
+//        }, mPicJpgListener);
     }
 
-    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void savePhoto(byte[] bytes){
         if (bytes == null) {
             return;
@@ -138,14 +138,14 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
 
 
 
-    /**
-     * JPEG データ生成完了時のコールバック
-     */
-    private CameraSource.PictureCallback mPicJpgListener = new CameraSource.PictureCallback() {
-        public void onPictureTaken(byte[] bytes) {
-            MainActivityPermissionsDispatcher.savePhotoWithCheck(MainActivity.this,bytes);
-        }
-    };
+//    /**
+//     * JPEG データ生成完了時のコールバック
+//     */
+//    private CameraSource.PictureCallback mPicJpgListener = new CameraSource.PictureCallback() {
+//        public void onPictureTaken(byte[] bytes) {
+//            MainActivityPermissionsDispatcher.savePhotoWithCheck(MainActivity.this,bytes);
+//        }
+//    };
 
     /**
      * アンドロイドのデータベースへ画像のパスを登録
@@ -251,64 +251,50 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
         client.disconnect();
     }
 
+    //TODO:activityでonRequestPermissionsResultを実装するとWinkFragmentのonRequestPermissionsResultがこない
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         Log.w(TAG, "onRequestPermissionsResult");
-        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        mWinkFragment.onRequestPermissionsResultForFragment(requestCode,permissions,grantResults);
+//        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
-
-    @SuppressWarnings("unused")
-    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    void deniedPermission() {
-        Log.w(TAG, "deniedPermission");
-        if (PermissionUtils.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Toast.makeText(this, "電話をかけるのに失敗しました。", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "あうあうあ。", Toast.LENGTH_SHORT).show();
-//            new MaterialDialog.Builder(this)
-//                    .theme(Theme.LIGHT)
-//                    .title("電話をかけることが出来ません")
-//                    .content("電話をかけるためには、設定画面>許可からご自身で権限を許可して頂く必要があります。")
-//                    .positiveText("設定画面へ")
-//                    .negativeText("今はしない")
-//                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-//                        @Override
-//                        public void onClick(MaterialDialog dialog, DialogAction action) {
-//                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-//                            Uri uri = Uri.fromParts("package", getPackageName(), null);
-//                            intent.setData(uri);
-//                            startActivity(intent);
-//                        }
-//                    })
-//                    .show();
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    void showRationaleForCamera(final PermissionRequest request) {
-        Log.w(TAG, "showRationaleForCamera");
-        new AlertDialog.Builder(this)
-                .setMessage("")
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        request.cancel();
-                    }
-                })
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        request.proceed();
-                    }
-                })
-                .show();
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        Log.w(TAG, "showNeverAskForCamera");
-        Toast.makeText(this, android.R.string.VideoView_error_text_invalid_progressive_playback, Toast.LENGTH_SHORT).show();
-    }
+//
+//    @SuppressWarnings("unused")
+//    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//    void deniedPermission() {
+//        Log.w(TAG, "deniedPermission");
+//        if (PermissionUtils.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//            Toast.makeText(this, "電話をかけるのに失敗しました。", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(this, "あうあうあ。", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    @SuppressWarnings("unused")
+//    @OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//    void showRationaleForCamera(final PermissionRequest request) {
+//        Log.w(TAG, "showRationaleForCamera");
+//        new AlertDialog.Builder(this)
+//                .setMessage("")
+//                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        request.cancel();
+//                    }
+//                })
+//                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        request.proceed();
+//                    }
+//                })
+//                .show();
+//    }
+//
+//    @OnNeverAskAgain(Manifest.permission.CAMERA)
+//    void showNeverAskForCamera() {
+//        Log.w(TAG, "showNeverAskForCamera");
+//        Toast.makeText(this, android.R.string.VideoView_error_text_invalid_progressive_playback, Toast.LENGTH_SHORT).show();
+//    }
 
 }
