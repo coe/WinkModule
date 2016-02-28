@@ -135,12 +135,4 @@ public class MainActivity extends AppCompatActivity implements WinkFragment.OnFr
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        Log.w(TAG, "onRequestPermissionsResult");
-        mWinkFragment.onRequestPermissionsResultForFragment(requestCode,permissions,grantResults);
-    }
-
-
 }

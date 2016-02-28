@@ -412,19 +412,6 @@ public class WinkFragment extends Fragment {
         onRequestPermissionsResultImpl(requestCode,permissions,grantResults);
     }
 
-    /**
-     * This method is called from AppCompatActivity#onRequestPermissionsResult
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
-    public void onRequestPermissionsResultForFragment(int requestCode, String[] permissions, int[] grantResults) {
-        Timber.d("onRequestPermissionsResultForFragment permissions:"+permissions[0]);
-        Timber.d("onRequestPermissionsResultForFragment requestCode:" + requestCode);
-        onRequestPermissionsResultImpl(requestCode & 0x000000ff,permissions,grantResults);
-
-    }
-
     private void onRequestPermissionsResultImpl(int requestCode, String[] permissions, int[] grantResults) {
         Timber.d("onRequestPermissionsResultImpl permissions:"+permissions[0]);
         Timber.d("onRequestPermissionsResultImpl requestCode:" + requestCode);

@@ -22,7 +22,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.google.android.gms:play-services-vision:8.3.0'
+    compile 'com.google.android.gms:play-services-vision:8.4.0'
     compile 'com.jakewharton.timber:timber:3.1.0'
 }
 
@@ -34,7 +34,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository url: "file://${repo.absolutePath}"
-            pom.version = '1.2.0'
+            pom.version = '1.2.1'
             pom.groupId = 'jp.coe.winkfragment'
             pom.artifactId = 'winkfragment'
         }
