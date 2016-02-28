@@ -14,7 +14,7 @@ repositories {
 maven { url 'http://raw.github.com/coe/WinkModule/master/repository/' }
 }
 dependencies {
-compile 'jp.coe.winkfragment:winkfragment:1.1.4'
+compile 'jp.coe.winkfragment:winkfragment:1.2.1'
 }
 
 ## How to use
