@@ -21,6 +21,11 @@ compile 'jp.coe.winkfragment:winkfragment:1.2.1'
 - `implements WinkFragment.OnFragmentInteractionListener ` をあなたのActivityに追加
 - `jp.coe.winkfragment.WinkFragment`をあなたのActivityレイアウトに追加
 
+## Apps
+ [手を使わず読書 WinkBook](https://play.google.com/store/apps/details?id=jp.coe.winkbook)
+
+[自撮りも簡単！ウィンクカメラ Wink Camera](https://play.google.com/store/apps/details?id=jp.coe.winkcamera)
+
 ## more
 付属のサンプルアプリも確認してください。
 
